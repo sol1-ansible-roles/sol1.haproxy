@@ -1,0 +1,68 @@
+#!/bin/bash -x
+
+# a script to dump and restore acls from haproxy
+# reads the admin socket from /etc/haproxy/haproxy.cfg
+
+ADMINSOCKET=$(grep 'stats socket' /etc/haproxy/haproxy.cfg |awk '{print $3}')
+
+# dump function only 'src' type
+
+dump () {
+ACLS=$(echo "show acl"|socat $ADMINSOCKET stdio|grep -v '^$'|grep -v '#'|grep -v '^1 ' |grep -v '^0 '|grep "acl 'src'"|awk '{print $1}')
+
+
+mkdir /tmp/haproxy-dump -p
+
+echo $ACLS
+
+for acl in $ACLS
+do 
+        rm /tmp/haproxy-dump/$acl.srcips -f
+        echo "show acl #$acl"|socat $ADMINSOCKET stdio |grep -v '^$'| awk '{print $2}' >> /tmp/haproxy-dump/$acl.srcips
+done
+
+}
+
+restore () {
+
+if [ `ls /tmp/haproxy-dump/*.srcips|wc -l` -ne 0 ]
+then echo "acls found, restoring"
+else echo "acls not found, aborting"
+fi
+
+FOUNDACLS=$(cd /tmp/haproxy-dump;ls *.srcips|cut -f1 -d '.')
+
+for acl in $FOUNDACLS
+do echo "found ACL $acl"
+        for ip in `cat /tmp/haproxy-dump/$acl.srcips`
+        do 
+	if echo "get acl #$acl" | socat /run/haproxy/admin.sock stdio |grep $ip
+	then echo "skipping already present"
+	else    echo "add acl #$acl $ip" | socat /run/haproxy/admin.sock stdio
+	fi
+        done
+done
+
+#cleanup
+rm -rf /tmp/haproxy-dump
+
+
+}
+
+echohelp () {
+        echo "This script dumps haproxy 'src' acls to disk so you can reload haproxy. Then you can call it afterwards to restore the acls.
+        usage: haproxyacl dump
+               haproxyacl restore
+         It takes care of finding the admin socket, dumping and readying back in all the dumped acls. They are stored in /tmp/haproxy-dump.
+         "
+}
+
+case $1 in
+  dump) dump;;
+  restore) restore;;
+
+  --help) echohelp;;
+
+  *)  echo "either dump or restore";;
+esac
+

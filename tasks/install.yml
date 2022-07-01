@@ -23,3 +23,10 @@
   with_items: "{{ haproxy_install }}"
   tags:
     - haproxy-install-additional
+
+- name: install dump/restore acl script
+  copy:
+    src: files/haproxyacl
+    dest: /usr/local/sbin/haproxyacl
+    mode: 0700
+  when: haproxy_acl_script is true
