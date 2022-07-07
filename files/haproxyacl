@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # a script to dump and restore acls from haproxy
 # reads the admin socket from /etc/haproxy/haproxy.cfg
