@@ -13,8 +13,6 @@ ACLS=$(echo "show acl"|socat $ADMINSOCKET stdio|grep -v '^$'|grep -v '#'|grep -v
 
 mkdir /tmp/haproxy-dump -p
 
-echo $ACLS
-
 for acl in $ACLS
 do 
         rm /tmp/haproxy-dump/$acl.srcips -f
