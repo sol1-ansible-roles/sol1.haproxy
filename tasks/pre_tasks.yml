@@ -1,0 +1,27 @@
+---
+- name: make /var/www dir
+  file:
+    path: /var/www
+    state: directory
+    mode: 0755
+
+- name: copy wildcard cert from vault
+  copy:
+    content: "{{ item.content }}"
+    dest: "/etc/ssl/private/{{ item.name }}"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o="
+  no_log: true
+  with_items:
+# Certificates are stored in vaulkt strings in host vars
+    - "{{ certificates }}"
+  when: certificates is defined
+    
+- name: copy over custom 403
+  copy:
+    src: files/haproxy-403.http
+    dest: /var/www/403.http
+    owner: root
+    group: haproxy
+    mode: '0644'
