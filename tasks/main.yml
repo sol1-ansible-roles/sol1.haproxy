@@ -15,6 +15,12 @@
     - haproxy
     - haproxy-install
 
+- import_tasks: pre_tasks.yml
+  tags:
+    - configuration
+    - haproxy
+    - haproxy-install
+
 - import_tasks: certificates.yml
   tags:
     - configuration
