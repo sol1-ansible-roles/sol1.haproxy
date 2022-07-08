@@ -6,6 +6,8 @@ haproxy_version: 1.8
 haproxy_acl_script: false
 haproxy_backup_acls: false
 
+haproxy_403_file: "files/haproxy-403.http"
+
 haproxy_dependencies:
   - name: haproxy
     state: latest
