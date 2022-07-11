@@ -6,7 +6,7 @@
     mode: 0755
 
 - debug:
-    msg: "{{ certificates.name }}" 
+    msg: "{{ item.content }}" 
   loop: "{{ certificates.name }}"
 
     #- debug:
