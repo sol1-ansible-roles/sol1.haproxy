@@ -5,6 +5,9 @@
     state: directory
     mode: 0755
 
+- debug:
+    msg: "{{ certificates }}"
+
 - name: copy wildcard cert from vault
   copy:
     content: "{{ item.content }}"
@@ -14,7 +17,6 @@
     mode: "u=rw,g=r,o="
   no_log: false
   with_items:
-# Certificates are stored in vaulkt strings in host vars
     - "{{ certificates }}"
   when: certificates is defined
     
