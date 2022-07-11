@@ -6,11 +6,8 @@
     mode: 0755
 
 - debug:
-    msg: "{{ item.name }}" 
-  loop: 
-    - "{{ certificates }}"
-  loop_control: 
-    label: "{{item.name }}"
+    msg: "{{ certificates.name }}" 
+  loop: "{{ certificates.name }}"
 
     #- debug:
     #    msg: "Name={{ item.name }} content={{ item.name.content }}"
