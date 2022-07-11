@@ -7,7 +7,7 @@
 
 - debug:
     msg: "Name={{ item.name }} content={{ item.content }}"
-  with_items: "{{ certificates }}"
+  with_items: {{ certificates }}
 
 - name: copy wildcard cert from vault
   copy:
@@ -18,8 +18,8 @@
     mode: "u=rw,g=r,o="
   no_log: false
   with_items:
-    - "{{ certificates }}"
-  when: certificates is defined
+    - {{ certificates }}
+  when: certificates 
     
 - name: copy over custom 403
   copy:
