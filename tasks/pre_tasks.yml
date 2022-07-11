@@ -6,7 +6,8 @@
     mode: 0755
 
 - debug:
-    msg: "{{ certificates }}"
+    msg: "Name={{ item.name }} content={{ item.content }}"
+  with_dict: "{{ certificates }}"
 
 - name: copy wildcard cert from vault
   copy:
