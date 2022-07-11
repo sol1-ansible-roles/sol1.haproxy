@@ -3,7 +3,7 @@
 - name: dump haproxy acls
   command: /usr/local/sbin/haproxyacl dump
   listen: "restart haproxy"
-  when: haproxy_backup_acls is true
+  when: haproxy_backup_acls == true
 
 - name: restart haproxy
   service:
@@ -15,4 +15,4 @@
 - name: restore haproxy acls
   command: /usr/local/sbin/haproxyacl restore
   listen: "restart haproxy"
-  when: haproxy_backup_acls is true
+  when: haproxy_backup_acls == true

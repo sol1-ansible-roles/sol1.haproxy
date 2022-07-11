@@ -29,4 +29,4 @@
     src: files/haproxyacl
     dest: /usr/local/sbin/haproxyacl
     mode: 0700
-  when: haproxy_acl_script is true
+  when: haproxy_acl_script == true
