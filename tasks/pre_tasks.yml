@@ -6,8 +6,8 @@
     mode: 0755
 
 - debug:
-    msg: "{{ item }}" 
-  with_dict: "{{ certificates }}"
+    msg: "{{ certificates.name }}" 
+  loop: "{{ certificates }}"
 
     #- debug:
     #    msg: "Name={{ item.name }} content={{ item.name.content }}"
