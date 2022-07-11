@@ -7,7 +7,7 @@
 
 - debug:
     msg: "Name={{ item.name }} content={{ item.content }}"
-  with_dict: "{{ certificates }}"
+  with_items: "{{ certificates }}"
 
 - name: copy wildcard cert from vault
   copy:
