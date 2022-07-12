@@ -5,15 +5,6 @@
     state: directory
     mode: 0755
 
-- debug:
-    msg: "{{ item }}" 
-  loop: "{{ certificates }}"
-  loop_control: 
-    loop_var: item
-
-    #- debug:
-    #    msg: "Name={{ item.name }} content={{ item.name.content }}"
-
 - name: copy wildcard cert from vault
   copy:
     content: "{{ item.content }}"
@@ -21,7 +12,7 @@
     owner: root
     group: root
     mode: "u=rw,g=r,o="
-  no_log: false
+  no_log: true
   with_items:
     - "{{ certificates }}"
   when: certificates 
