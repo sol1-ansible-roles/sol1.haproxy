@@ -1,0 +1,28 @@
+---
+- name: install dump/restore acl script
+  copy:
+    src: files/haproxyacl
+    dest: /usr/local/sbin/haproxyacl
+    mode: 0700
+
+# systemd install
+
+- name: create haproxy systemd dir
+  file:
+    path: /etc/systemd/system/haproxy.service.d/
+    state: directory
+    mode: '0755'
+
+- name: drop in dump unit snippet
+  copy:
+    src: files/systemd-dumpacl.conf
+    dest: /etc/systemd/system/haproxy.service.d/dumpacl.conf
+
+- name: drop in restore unit snippet
+  copy:
+    src: files/systemd-restoreacl.conf
+    dest: /etc/systemd/system/haproxy.service.d/restoreacl.conf
+
+- name: reload systemd config
+  systemd:
+    daemon-reload: yes
