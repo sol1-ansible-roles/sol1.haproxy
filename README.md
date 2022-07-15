@@ -17,6 +17,8 @@ Set up (the latest version of) [HAProxy](http://www.haproxy.org/) in Ubuntu syst
 
 * `haproxy_install`: [default: `[]`]: Additional packages to install (e.g. `socat`)
 
+* `haproxy_acl_script`: [default: `false`]: Installs a script to backup and restore Haproxy ACLs on restart in systemd (for dynamic ACLs via the admin socket)
+
 * `haproxy_global_log`: [default: See `defaults/main.yml`]: Log declarations
 * `haproxy_global_log.{n}.address`: [required]: Indicates where to send the logs (e.g. `/dev/log`)
 * `haproxy_global_log.{n}.facility`: [required]: Must be one of the 24 standard syslog facilities (e.g. `local0`, `local1`)

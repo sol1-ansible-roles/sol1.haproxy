@@ -1,18 +1,7 @@
 # handlers file for haproxy
 ---
-- name: dump haproxy acls
-  command: /usr/local/sbin/haproxyacl dump
-  listen: "restart haproxy"
-  when: haproxy_backup_acls == true
-
 - name: restart haproxy
   service:
     name: haproxy
     state: "{{ haproxy_restart_handler_state }}"
   when: service_default_state | default('started') == 'started'
-
-
-- name: restore haproxy acls
-  command: /usr/local/sbin/haproxyacl restore
-  listen: "restart haproxy"
-  when: haproxy_backup_acls == true
