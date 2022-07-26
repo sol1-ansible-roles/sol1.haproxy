@@ -14,9 +14,8 @@
     mode: "u=rw,g=r,o="
   no_log: true
   with_items:
-# Certificates are stored in vaulkt strings in host vars
     - "{{ certificates }}"
-  when: certificates is defined
+  when: certificates 
     
 - name: copy over custom 403
   copy:

@@ -17,6 +17,7 @@ for acl in $ACLS
 do 
         rm /tmp/haproxy-dump/$acl.srcips -f
         echo "show acl #$acl"|socat $ADMINSOCKET stdio |grep -v '^$'| awk '{print $2}' >> /tmp/haproxy-dump/$acl.srcips
+	echo "Dumping $acl"|logger
 done
 
 }
@@ -38,6 +39,7 @@ do echo "found ACL $acl"
 	then echo "skipping already present"
 	else    echo "add acl #$acl $ip" | socat /run/haproxy/admin.sock stdio
 	fi
+	echo "Restoring $acl"|logger
         done
 done
 

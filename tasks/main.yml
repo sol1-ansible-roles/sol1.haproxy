@@ -15,6 +15,9 @@
     - haproxy
     - haproxy-install
 
+- import_tasks: installacl.yml
+  when: haproxy_acl_script == true
+
 - import_tasks: pre_tasks.yml
   tags:
     - configuration
