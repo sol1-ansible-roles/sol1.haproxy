@@ -55,6 +55,10 @@ backend {{ backend.name }}
   tcp-check {{ tcp_check }}
 {% endfor %}
 
+{% for persist in backend.persist | default([]) %}
+  persist {{ persist }}
+{% endfor %}
+
 {% for timeout in backend.timeout | default([]) %}
   timeout {{ timeout.type }} {{ timeout.timeout }}
 {% endfor %}
