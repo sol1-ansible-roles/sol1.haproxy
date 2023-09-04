@@ -15,8 +15,8 @@
   no_log: true
   with_items:
     - "{{ certificates }}"
-  when: certificates 
-    
+  when: certificates is defined
+
 - name: copy over custom 403
   copy:
     src: files/haproxy-403.http
