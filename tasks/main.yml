@@ -1,53 +1,22 @@
-# tasks file for haproxy
 ---
-- name: check version support
-  fail:
-    msg: "HAProxy version {{ haproxy_version }} is not supported"
-  when: haproxy_version | string not in haproxy_versions_supported
-  tags:
-    - configuration
-    - haproxy
-    - haproxy-check-version-support
+- name: HAProxy | Import install task
+  ansible.builtin.import_tasks: install.yml
 
-- import_tasks: install.yml
-  tags:
-    - configuration
-    - haproxy
-    - haproxy-install
+- name: HAProxy | Import pre_tasks task
+  ansible.builtin.import_tasks: pre_tasks.yml
 
-- import_tasks: installacl.yml
-  when: haproxy_acl_script == true
+- name: HAProxy | Import certificates task
+  ansible.builtin.import_tasks: certificates.yml
 
-- import_tasks: pre_tasks.yml
-  tags:
-    - configuration
-    - haproxy
-    - haproxy-install
+- name: HAProxy | Import static ACL task
+  ansible.builtin.import_tasks: acl.yml
+  when: haproxy_acl_files | length > 0
 
-- import_tasks: certificates.yml
-  tags:
-    - configuration
-    - haproxy
-    - haproxy-certificates
+- name: HAProxy | Import configuration task
+  ansible.builtin.import_tasks: configuration.yml
 
-- import_tasks: acl.yml
-  tags:
-    - configuration
-    - haproxy
-    - haproxy-acl
-
-- import_tasks: configuration.yml
-  tags:
-    - configuration
-    - haproxy
-    - haproxy-configuration
-
-- name: start and enable service
-  service:
+- name: HAProxy | Start and enable the service
+  ansible.builtin.service:
     name: haproxy
     state: "{{ service_default_state | default('started') }}"
     enabled: "{{ service_default_enabled | default(true) | bool }}"
-  tags:
-    - configuration
-    - haproxy
-    - haproxy-start-enable-service

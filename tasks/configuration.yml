@@ -1,25 +1,22 @@
-# tasks file for haproxy
 ---
-- name: configuration | update file
-  template:
+- name: HAProxy configuration | Update config file
+  ansible.builtin.template:
     src: "{{ haproxy_conf_template }}"
     dest: /etc/haproxy/haproxy.cfg
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
     validate: 'haproxy -f %s -c'
   notify: restart haproxy
-  tags:
-    - haproxy-configuration-update-file
 
-- name: configuration | format file (remove empty)
-  lineinfile:
+- name: HAProxy configuration | Format file by removing empty lines
+  ansible.builtin.lineinfile:
     path: /etc/haproxy/haproxy.cfg
     regex: '^\n'
     state: absent
 
-- name: configuration | format file (empty before headings)
-  replace:
+- name: HAProxy configuration | Format file by adding one empty line before each section
+  ansible.builtin.replace:
     dest: /etc/haproxy/haproxy.cfg
     regexp: "^#--#"
     replace: ""

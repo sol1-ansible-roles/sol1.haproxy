@@ -1,24 +1,12 @@
 ---
-- name: make /var/www dir
-  file:
+- name: HAProxy Pre-tasks | Make /var/www dir
+  ansible.builtin.file:
     path: /var/www
     state: directory
-    mode: 0755
+    mode: '0755'
 
-- name: copy wildcard cert from vault
-  copy:
-    content: "{{ item.content }}"
-    dest: "/etc/ssl/private/{{ item.name }}"
-    owner: root
-    group: root
-    mode: "744"
-  no_log: true
-  with_items:
-    - "{{ certificates }}"
-  when: certificates is defined
-
-- name: copy over custom 403
-  copy:
+- name: HAProxy Pre-tasks | Copy HAProxy 403
+  ansible.builtin.copy:
     src: files/haproxy-403.http
     dest: /var/www/403.http
     owner: root

@@ -1,32 +1,54 @@
-# tasks file for haproxy
----
-#- name: install | add repository from PPA and install its signing key
-#  apt_repository:
-#    repo: "{{ haproxy_ppa }}"
-#    update_cache: true
-#  when: haproxy_use_ppa
-#  tags:
-#    - haproxy-install-add-repository
+- name: HAProxy Install | Debian Block
+  when: ansible_facts['os_family'] == 'Debian'
+  block:
+    - name: HAProxy Install | Install GPG
+      ansible.builtin.apt:
+        update_cache: true
+        name: gpg
+        state: present
 
-- name: install | dependencies
-  apt:
-    name: "{{ item.name }}"
-    state: "{{ item.state }}"
-  with_items: "{{ haproxy_dependencies }}"
-  tags:
-    - haproxy-install-dependencies
+    - name: HAProxy Install | Download GPG key
+      ansible.builtin.get_url:
+        url: "https://haproxy.debian.net/bernat.debian.org.gpg"
+        dest: "/tmp/bernat.debian.org.gpg"
+        mode: '0644'
 
-- name: install | additional
-  apt:
-    name: "{{ item }}"
-    state: "{{ apt_install_state | default('latest') }}"
-  with_items: "{{ haproxy_install }}"
-  tags:
-    - haproxy-install-additional
+    - name: HAProxy Install | Convert GPG key to keyring format
+      ansible.builtin.command:
+        cmd: "gpg --dearmor -o /usr/share/keyrings/haproxy.debian.net.gpg /tmp/bernat.debian.org.gpg"
+      args:
+        creates: "/usr/share/keyrings/haproxy.debian.net.gpg"
 
-- name: install dump/restore acl script
-  copy:
-    src: files/haproxyacl
-    dest: /usr/local/sbin/haproxyacl
-    mode: 0700
-  when: haproxy_acl_script == true
+    - name: HAProxy Install | Add HAProxy repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/haproxy.debian.net.gpg] http://haproxy.debian.net {{ ansible_facts['distribution_release'] | lower }}-backports-{{ haproxy_version }} main"
+        state: present
+        filename: "haproxy.list"
+
+    - name: HAProxy Install | Set package name
+      ansible.builtin.set_fact:
+        haproxy_package: "haproxy={{ haproxy_version }}.\*"
+
+- name: HAProxy Install | Ubuntu Block
+  when: ansible_facts['os_family'] == 'Ubuntu'
+  block:
+    - name: HAProxy Install | add repository from PPA and install its signing key
+      ansible.builtin.apt:
+        name: software-properties-common
+        update_cache: true
+
+    - name: HAProxy Install | add repository from PPA and install its signing key
+      ansible.builtin.apt_repository:
+        repo: "ppa:vbernat/haproxy-{{ haproxy_version }}"
+        update_cache: true
+      when: haproxy_use_ppa and haproxy_version is version_compare('2.9', '>=')
+
+    - name: HAProxy Install | Set package name
+      ansible.builtin.set_fact:
+        haproxy_package: "haproxy={{ haproxy_version }}.\*"
+
+- name: HAProxy Install | Install HAProxy requested version
+  ansible.builtin.apt:
+    update_cache: true
+    name: "{{ haproxy_package }}"
+    state: present
