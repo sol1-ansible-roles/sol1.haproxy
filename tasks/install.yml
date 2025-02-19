@@ -27,7 +27,7 @@
 
     - name: HAProxy Install | Set package name
       ansible.builtin.set_fact:
-        haproxy_package: "haproxy={{ haproxy_version }}.\*"
+        haproxy_package: "haproxy={{ haproxy_version }}.*"
 
 - name: HAProxy Install | Ubuntu Block
   when: ansible_facts['os_family'] == 'Ubuntu'
@@ -45,7 +45,7 @@
 
     - name: HAProxy Install | Set package name
       ansible.builtin.set_fact:
-        haproxy_package: "haproxy={{ haproxy_version }}.\*"
+        haproxy_package: "haproxy={{ haproxy_version }}.*"
 
 - name: HAProxy Install | Install HAProxy requested version
   ansible.builtin.apt:
