@@ -1,24 +1,19 @@
-## haproxy
+## HAProxy
 
-[![Build Status](https://travis-ci.org/Oefenweb/ansible-haproxy.svg?branch=master)](https://travis-ci.org/Oefenweb/ansible-haproxy)
-[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-haproxy-blue.svg)](https://galaxy.ansible.com/Oefenweb/haproxy)
+**Updated Sol1 HAProxy Role**
+This role is currently still a WIP being adapted for a more streamlined approach.
 
-Set up (the latest version of) [HAProxy](http://www.haproxy.org/) in Ubuntu systems.
+### Installation Variables
+**Universal**
+* `haproxy_version`: [default: `3.0`]: Version to install
+* `haproxy_403_file`: [default: `files/haproxy-403.http`] Custom access_denied backend page
+* `haproxy_addition_packages`: [default: `[]`]: Additional packages to install (e.g. `socat`)
+* `haproxy_conf_template`: [default: `etc/haproxy/haproxy.cfg.j2`]: Default location of the haproxy config template
 
-#### Requirements
-
-* `python-apt`
-
-#### Variables
-
+**Ubuntu**
 * `haproxy_use_ppa`: [default: `true`]: Whether or not to add the PPA (for installation)
 
-* `haproxy_version`: [default: `1.8`]: Version to install (e.g. `1.5`, `1.6`, `1.7`, `1.8`, `1.9`, `2.0`, `2.1`)
-
-* `haproxy_install`: [default: `[]`]: Additional packages to install (e.g. `socat`)
-
-* `haproxy_acl_script`: [default: `false`]: Installs a script to backup and restore Haproxy ACLs on restart in systemd (for dynamic ACLs via the admin socket)
-
+### Configuration Options
 * `haproxy_global_log`: [default: See `defaults/main.yml`]: Log declarations
 * `haproxy_global_log.{n}.address`: [required]: Indicates where to send the logs (e.g. `/dev/log`)
 * `haproxy_global_log.{n}.facility`: [required]: Must be one of the 24 standard syslog facilities (e.g. `local0`, `local1`)

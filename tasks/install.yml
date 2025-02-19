@@ -25,10 +25,6 @@
         state: present
         filename: "haproxy.list"
 
-    - name: HAProxy Install | Set package name
-      ansible.builtin.set_fact:
-        haproxy_package: "haproxy={{ haproxy_version }}.*"
-
 - name: HAProxy Install | Ubuntu Block
   when: ansible_facts['os_family'] == 'Ubuntu'
   block:
@@ -43,12 +39,20 @@
         update_cache: true
       when: haproxy_use_ppa and haproxy_version is version_compare('2.9', '>=')
 
-    - name: HAProxy Install | Set package name
-      ansible.builtin.set_fact:
-        haproxy_package: "haproxy={{ haproxy_version }}.*"
+- name: HAProxy Install | Set package name
+  ansible.builtin.set_fact:
+    haproxy_package: "haproxy={{ haproxy_version }}.*"
 
 - name: HAProxy Install | Install HAProxy requested version
   ansible.builtin.apt:
     update_cache: true
     name: "{{ haproxy_package }}"
     state: present
+
+- name: HAProxy Install | Install Additional Packages
+  ansible.builtin.apt:
+    update_cache: true
+    name: "{{ item }}"
+    state: present
+  loop: "{{ haproxy_additional_packages }}"
+  when: haproxy_additional_packages is defined
